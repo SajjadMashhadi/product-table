@@ -16,8 +16,6 @@ export default function RootLayout({ children }: Props) {
       <html lang="en">
         <body>
           <section className="p-[50px] ">
-            <Nav />
-
             <main className="[direction:rtl] py-[10px] ">{children}</main>
           </section>
         </body>

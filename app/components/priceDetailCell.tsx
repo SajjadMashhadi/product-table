@@ -40,7 +40,13 @@ export default function PriceDetailCell({
       <Cell>
         <div>
           <div>{detailItem.title}</div>
-          <div>{detailItem.quantity}</div>
+          <div>
+            {
+              detailItem.providers.find(
+                (item) => item.provider.name === providerName
+              ).price
+            }
+          </div>
           <div>{provider.name}</div>
         </div>
       </Cell>

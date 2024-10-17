@@ -9,10 +9,18 @@ interface ProductData {
       productId: number;
       title: string;
       quantity: number;
+      subItems: {
+        supplyProductId: number;
+        title: string;
+        productd: number;
+      }[];
     }[];
   }[];
   providersPriceDetails: { id: number; title: string; unit: number }[];
-  providers: {}[];
+  providers: {
+    provider: { id: number; name: string };
+    description: string;
+  }[];
 }
 
 export const fetchProducts = async () => {

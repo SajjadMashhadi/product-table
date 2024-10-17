@@ -8,7 +8,7 @@ import PriceDetailCell from "@/app/components/priceDetailCell";
 
 export default function Products() {
   const pathname = usePathname();
-  // Using a query hook automatically fetches data and returns query values
+
   const { data, isError, isLoading, isSuccess } = useGetProductQuery();
 
   if (isError) {
@@ -30,15 +30,15 @@ export default function Products() {
   if (isSuccess) {
     return (
       <div>
-        <table>
+        <table className="w-full border-[0.5px] border-orange-200 ">
           <thead className="flex flex-row  [direction:rtl]">
-            <Cell className="border-l-0 max-w-[100px] h-[100px] ">
+            <Cell className=" max-w-[10%] h-[100px] max-h-[100px] ">
               <div className="font-bold">#</div>
             </Cell>
 
-            <Cell className="border-l-0 h-[100px] font-bold">
+            <Cell className=" h-[100px] max-h-[100px] font-bold">
               <div className="flex flex-col w-full h-full">
-                <div className="h-1/2 border-b-[0.5px] border-b-gray-200 w-full flex flex-col justify-center items-center ">
+                <div className="h-1/2 border-b-[1px] border-b-gray-200 w-full flex flex-col justify-center items-center ">
                   تامین کننده
                 </div>
                 <div className="h-1/2 w-full flex flex-col justify-center items-center ">
@@ -49,8 +49,8 @@ export default function Products() {
 
             {data.providers.map((provider, index) => (
               <Cell
-                className={clsx("h-[100px]", {
-                  "border-l-0": index !== data.providers.length - 1,
+                className={clsx("h-[100px] max-h-[100px]", {
+                  " ": index !== data.providers.length - 1,
                 })}
                 key={provider.provider.id}
               >
@@ -62,25 +62,49 @@ export default function Products() {
           {data.products
             .find((product) => `/products/${product.id}` === pathname)
             ?.items.map((item, index) => (
-              <tr
-                key={item.productId}
-                className="flex flex-row  [direction:rtl]"
-              >
-                <Cell className="max-w-[100px]">
-                  <div>{index + 1}</div>
-                </Cell>
-                <Cell>
-                  <div>{item.title}</div>
-                </Cell>
-                <PriceDetailCell
-                  providerName={data.providers[0].provider.name}
-                  itemName={item.title}
-                />
-                <PriceDetailCell
-                  providerName={data.providers[1].provider.name}
-                  itemName={item.title}
-                />
-              </tr>
+              <>
+                <tr
+                  key={item.productId}
+                  className="flex flex-row  [direction:rtl]"
+                >
+                  <Cell className=" max-w-[10%]">
+                    <div>{index + 1}</div>
+                  </Cell>
+                  <Cell className="">
+                    <div>{item.title}</div>
+                  </Cell>
+                  <PriceDetailCell
+                    providerName={data.providers[0].provider.name}
+                    itemName={item.title}
+                  />
+                  <PriceDetailCell
+                    providerName={data.providers[1].provider.name}
+                    itemName={item.title}
+                  />
+                </tr>
+                {item.subItems.length > 0 &&
+                  item.subItems.map((sub, subIndex) => (
+                    <tr
+                      key={sub.productId}
+                      className="flex flex-row  [direction:rtl]"
+                    >
+                      <Cell className="max-w-[10%]">
+                        <div>{`${subIndex + 1} - ${index + 1}`}</div>
+                      </Cell>
+                      <Cell>
+                        <div>{sub.title}</div>
+                      </Cell>
+                      <PriceDetailCell
+                        providerName={data.providers[0].provider.name}
+                        itemName={sub.title}
+                      />
+                      <PriceDetailCell
+                        providerName={data.providers[1].provider.name}
+                        itemName={sub.title}
+                      />
+                    </tr>
+                  ))}
+              </>
             ))}
         </table>
       </div>
