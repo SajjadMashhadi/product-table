@@ -6,12 +6,14 @@ import {
   incrementEUR,
   decrementEUR,
   decrementUSD,
+  selectShowPrice,
 } from "@/lib/features/price/priceSlice";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 
 import Cell from "../ui/cell";
 import { useEffect, useState } from "react";
 import CellItemList from "../ui/cellItemList";
+import Form from "./form";
 
 const currencyText: { USD: string; EUR: string } = {
   USD: "دلار",
@@ -25,6 +27,7 @@ export default function PriceDetailCell({
   providerName: string;
   itemName: string;
 }) {
+  const showPrice = useAppSelector(selectShowPrice);
   const dispatch = useAppDispatch();
   const { data, isError, isLoading, isSuccess } = useGetProductQuery();
 
@@ -79,15 +82,37 @@ export default function PriceDetailCell({
   if (data && detailItem && provider) {
     return (
       <Cell className="relative">
-        <div className="absolute left-[5px] top-[5px] ">
-          <input
-            type="checkbox"
-            checked={include}
-            onChange={(e) => setInclude(e.target.checked)}
-            className="checkbox checkbox-sm checkbox-primary"
-          />
-        </div>
-        <div className="w-full flex flex-col items-center gap-[5px] ">
+        {showPrice && (
+          <div className="absolute left-[5px] top-[5px] ">
+            <input
+              type="checkbox"
+              checked={include}
+              onChange={(e) => setInclude(e.target.checked)}
+              className="checkbox checkbox-sm checkbox-primary "
+            />
+          </div>
+        )}
+        <dialog id="my_modal_1" className="modal">
+          <div className="modal-box">
+            <div className="flex flex-row justify-between">
+              <h3 className="font-bold ">تایید قیمت نهایی</h3>
+              <button
+                onClick={() => document.getElementById("my_modal_1").close()}
+                className=" border-none btn-sm btn-circle outline-none "
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="modal-action">
+              <Form />
+            </div>
+          </div>
+        </dialog>
+        <div
+          onClick={() => document.getElementById("my_modal_1").showModal()}
+          className="w-full flex flex-col items-center gap-[5px] hover:cursor-pointer "
+        >
           <CellItemList tag="نوع ارز" text={currencyText[provider.currency]} />
           <CellItemList tag="وضعیت کالا" text={provider.productStatus.title} />
           <CellItemList tag="تعداد تایید شده" text={provider.quantity} />

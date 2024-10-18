@@ -1,22 +1,32 @@
 "use client";
 
 import { useGetProductQuery } from "@/lib/features/products/productSlice";
-import { selectUSD, selectEUR } from "@/lib/features/price/priceSlice";
-import { useAppSelector } from "@/lib/hooks";
+import {
+  selectUSD,
+  selectEUR,
+  resetPrice,
+} from "@/lib/features/price/priceSlice";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 
 import Cell from "@/app/ui/cell";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import PriceDetailCell from "@/app/components/priceDetailCell";
 import TotalColPrice from "@/app/ui/totalColPrice";
+import { useEffect } from "react";
 
 export default function Products() {
+  const dispatch = useAppDispatch();
   const usd = useAppSelector(selectUSD);
   const eur = useAppSelector(selectEUR);
 
   const pathname = usePathname();
 
   const { data, isError, isLoading, isSuccess } = useGetProductQuery();
+
+  useEffect(() => {
+    dispatch(resetPrice());
+  }, []);
 
   if (isError) {
     return (

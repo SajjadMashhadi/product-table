@@ -17,6 +17,10 @@ export const priceSlice = createAppSlice({
   name: "price",
   initialState,
   reducers: (create) => ({
+    resetPrice: create.reducer((state) => {
+      state.USD = 0;
+      state.EUR = 0;
+    }),
     incrementUSD: create.reducer((state, action: PayloadAction<number>) => {
       state.USD += action.payload;
     }),
@@ -47,6 +51,7 @@ export const {
   decrementUSD,
   decrementEUR,
   toggleShowPrice,
+  resetPrice,
 } = priceSlice.actions;
 
 export const { selectUSD, selectEUR, selectShowPrice } = priceSlice.selectors;
