@@ -1,12 +1,19 @@
 "use client";
 
 import { useGetProductQuery } from "@/lib/features/products/productSlice";
+import { selectUSD, selectEUR } from "@/lib/features/price/priceSlice";
+import { useAppSelector } from "@/lib/hooks";
+
 import Cell from "@/app/ui/cell";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import PriceDetailCell from "@/app/components/priceDetailCell";
+import TotalColPrice from "@/app/ui/totalColPrice";
 
 export default function Products() {
+  const usd = useAppSelector(selectUSD);
+  const eur = useAppSelector(selectEUR);
+
   const pathname = usePathname();
 
   const { data, isError, isLoading, isSuccess } = useGetProductQuery();
@@ -106,6 +113,24 @@ export default function Products() {
                   ))}
               </>
             ))}
+          <tr className="flex flex-row  [direction:rtl]">
+            <Cell className=" max-w-[10%] h-[100px] max-h-[100px] bg-transparent ">
+              <div className="font-bold text-[11px]">مجموع انتخاب شده</div>
+            </Cell>
+            <Cell className="  h-[100px] max-h-[100px] bg-transparent  ">
+              <div className="font-bold"></div>
+            </Cell>
+            <Cell className="  h-[100px] max-h-[100px] bg-transparent  ">
+              <div className="font-bold">
+                <TotalColPrice title="یورو" total={eur} />
+              </div>
+            </Cell>
+            <Cell className="  h-[100px] max-h-[100px] bg-transparent  ">
+              <div className="font-bold">
+                <TotalColPrice title="دلار" total={usd} />
+              </div>
+            </Cell>
+          </tr>
         </table>
       </div>
     );

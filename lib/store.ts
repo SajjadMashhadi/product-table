@@ -3,10 +3,16 @@ import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { counterSlice } from "./features/counter/counterSlice";
 import { quotesApiSlice } from "./features/quotes/quotesApiSlice";
 import { productSlice } from "./features/products/productSlice";
+import { priceSlice } from "./features/price/priceSlice";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
-const rootReducer = combineSlices(counterSlice, quotesApiSlice, productSlice);
+const rootReducer = combineSlices(
+  counterSlice,
+  quotesApiSlice,
+  productSlice,
+  priceSlice
+);
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>;
 

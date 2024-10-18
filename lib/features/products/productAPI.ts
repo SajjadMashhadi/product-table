@@ -20,6 +20,7 @@ interface ProductData {
   providers: {
     provider: { id: number; name: string };
     description: string;
+    discount: number;
   }[];
 }
 

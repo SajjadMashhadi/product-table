@@ -12,10 +12,16 @@ interface ProductApiResponse {
       productId: number;
       title: string;
       quantity: number;
+      subItems: {
+        quantity: number;
+        supplyProductId: number;
+        title: string;
+        productId: number;
+      }[];
     }[];
   }[];
   providersPriceDetails: { id: number; title: string; unit: number }[];
-  providers: { provider: { id: number; name: string } }[];
+  providers: { discount: number; provider: { id: number; name: string } }[];
 }
 
 // Define a service using a base URL and expected endpoints
