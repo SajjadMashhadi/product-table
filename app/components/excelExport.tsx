@@ -6,7 +6,7 @@ export default function ExcelExport({
   excelData,
   fileName,
 }: {
-  excelData: JSON;
+  excelData: any;
   fileName: string;
 }) {
   const fileType =
