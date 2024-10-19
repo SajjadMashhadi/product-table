@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation";
 import PriceDetailCell from "@/app/components/priceDetailCell";
 import TotalColPrice from "@/app/ui/totalColPrice";
 import { useEffect } from "react";
+import { Providers } from "@/lib/types";
 
 export default function Products() {
   const dispatch = useAppDispatch();
@@ -64,7 +65,7 @@ export default function Products() {
               </div>
             </Cell>
 
-            {data.providers.map((provider, index) => (
+            {data.providers.map((provider: Providers, index) => (
               <Cell
                 className={clsx("h-[100px] max-h-[100px]", {
                   " ": index !== data.providers.length - 1,

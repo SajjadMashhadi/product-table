@@ -4,7 +4,7 @@ export interface Provider {
 }
 
 export interface Providers {
-  provider: Provider[];
+  provider: Provider;
 }
 
 export interface PriceProvider {
