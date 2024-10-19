@@ -41,6 +41,7 @@ export default function PriceDetailCell({
       const findItem = data.providersPriceDetails.find(
         (item) =>
           item.title === itemName &&
+          // @ts-ignore
           item.providers.find((p) => p.provider.name === providerName)
       );
 
@@ -51,6 +52,7 @@ export default function PriceDetailCell({
   useEffect(() => {
     if (detailItem) {
       const findProvider = detailItem.providers.find(
+        // @ts-ignore
         (item) => item.provider.name === providerName
       );
       setProvider(findProvider || null);
