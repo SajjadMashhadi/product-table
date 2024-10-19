@@ -13,6 +13,7 @@ export default function layout({ children }: { children: ReactNode }) {
   const { data, isError, isLoading, isSuccess } = useGetProductQuery();
 
   const [show, setShow] = useState(false);
+  const [excelData, setExcelData] = useState(false);
 
   useEffect(() => {
     dispatch(toggleShowPrice(show));
