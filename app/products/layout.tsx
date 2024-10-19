@@ -1,12 +1,17 @@
 "use client";
 
+import { useGetProductQuery } from "@/lib/features/products/productSlice";
+
 import { ReactNode, useEffect, useState } from "react";
 import { Nav } from "../components/Nav";
 import { toggleShowPrice } from "@/lib/features/price/priceSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import ExcelExport from "../components/excelExport";
 
 export default function layout({ children }: { children: ReactNode }) {
   const dispatch = useAppDispatch();
+  const { data, isError, isLoading, isSuccess } = useGetProductQuery();
+
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -32,7 +37,12 @@ export default function layout({ children }: { children: ReactNode }) {
       </div>
       <div className="border-[1px] w-ful border-gray-200 rounded-[20px] p-[40px] mt-[20px] ">
         <div className="flex flex-row justify-end">
-          <button>خروجی تیم تامین</button>
+          {data && (
+            <ExcelExport
+              excelData={JSON.parse(JSON.stringify(data.providersPriceDetails))}
+              fileName="محصولات"
+            />
+          )}
         </div>
         <Nav />
         <div className="mt-[5px] ">{children}</div>

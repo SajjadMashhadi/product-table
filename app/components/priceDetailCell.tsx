@@ -34,6 +34,8 @@ export default function PriceDetailCell({
   const [detailItem, setDetailItem] = useState(null);
   const [provider, setProvider] = useState(null);
   const [include, setInclude] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
+
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
@@ -92,25 +94,39 @@ export default function PriceDetailCell({
             />
           </div>
         )}
-        <dialog id="my_modal_1" className="modal">
-          <div className="modal-box">
-            <div className="flex flex-row justify-between">
-              <h3 className="font-bold ">تایید قیمت نهایی</h3>
+        {showFormModal && (
+          // <dialog className="modal show">
+          <div className="fixed top-[5%] left-[15%] z-[1000] modal-box w-[70%]  max-w-[70%] p-0">
+            <div className="flex flex-row justify-between border-b-[1px] border-gray-300 w-full p-[20px] ">
+              <h3 className="font-bold text-[16px] ">تایید قیمت نهایی</h3>
               <button
-                onClick={() => document.getElementById("my_modal_1").close()}
+                onClick={() => setShowFormModal(false)}
                 className=" border-none btn-sm btn-circle outline-none "
               >
                 ✕
               </button>
             </div>
 
-            <div className="modal-action">
-              <Form />
+            <div className="modal-action w-full p-[20px] ">
+              {provider && (
+                <Form
+                  key={detailItem.id}
+                  providerName={providerName}
+                  title={itemName}
+                  partNumber={detailItem.partNumber}
+                  currencyType={provider.currency}
+                  close={() => setShowFormModal(false)}
+                />
+              )}
             </div>
           </div>
-        </dialog>
+          //  </dialog>
+        )}
         <div
-          onClick={() => document.getElementById("my_modal_1").showModal()}
+          onClick={() => {
+            setShowFormModal(true);
+            // return document.getElementById("my_modal_1").showModal();
+          }}
           className="w-full flex flex-col items-center gap-[5px] hover:cursor-pointer "
         >
           <CellItemList tag="نوع ارز" text={currencyText[provider.currency]} />
