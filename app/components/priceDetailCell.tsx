@@ -15,10 +15,8 @@ import { useEffect, useState } from "react";
 import CellItemList from "../ui/cellItemList";
 import Form from "./form";
 
-const currencyText: { USD: string; EUR: string } = {
-  USD: "دلار",
-  EUR: "یورو",
-};
+import { currencyText } from "@/lib/texts";
+import { PriceDetail, PriceProvider, Provider, Providers } from "@/lib/types";
 
 export default function PriceDetailCell({
   providerName,
@@ -31,8 +29,8 @@ export default function PriceDetailCell({
   const dispatch = useAppDispatch();
   const { data, isError, isLoading, isSuccess } = useGetProductQuery();
 
-  const [detailItem, setDetailItem] = useState(null);
-  const [provider, setProvider] = useState(null);
+  const [detailItem, setDetailItem] = useState<PriceDetail | null>(null);
+  const [provider, setProvider] = useState<PriceProvider | null>(null);
   const [include, setInclude] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
 
@@ -46,7 +44,7 @@ export default function PriceDetailCell({
           item.providers.find((p) => p.provider.name === providerName)
       );
 
-      setDetailItem(findItem);
+      setDetailItem(findItem || null);
     }
   }, [data]);
 
@@ -55,11 +53,13 @@ export default function PriceDetailCell({
       const findProvider = detailItem.providers.find(
         (item) => item.provider.name === providerName
       );
-      setProvider(findProvider);
-      setTotalPrice(
-        ((findProvider.price * (100 - findProvider.discount)) / 100) *
-          findProvider.quantity
-      );
+      setProvider(findProvider || null);
+      if (findProvider) {
+        setTotalPrice(
+          ((findProvider.price * (100 - findProvider.discount)) / 100) *
+            findProvider.quantity
+        );
+      }
     }
   }, [detailItem]);
 
@@ -96,7 +96,7 @@ export default function PriceDetailCell({
         )}
         {showFormModal && (
           // <dialog className="modal show">
-          <div className="fixed top-[5%] left-[15%] z-[1000] modal-box w-[70%]  max-w-[70%] p-0">
+          <div className="fixed top-0 left-[15%] z-[1000] modal-box w-[70%]  max-w-[70%] p-0">
             <div className="flex flex-row justify-between border-b-[1px] border-gray-300 w-full p-[20px] ">
               <h3 className="font-bold text-[16px] ">تایید قیمت نهایی</h3>
               <button
@@ -129,9 +129,16 @@ export default function PriceDetailCell({
           }}
           className="w-full flex flex-col items-center gap-[5px] hover:cursor-pointer "
         >
-          <CellItemList tag="نوع ارز" text={currencyText[provider.currency]} />
+          <CellItemList
+            tag="نوع ارز"
+            // @ts-ignore
+            text={currencyText[provider.currency]}
+          />
           <CellItemList tag="وضعیت کالا" text={provider.productStatus.title} />
-          <CellItemList tag="تعداد تایید شده" text={provider.quantity} />
+          <CellItemList
+            tag="تعداد تایید شده"
+            text={provider.quantity.toString()}
+          />
           <CellItemList
             tag="درصد تخفیف"
             text={provider.discount === 0 ? "-" : provider.discount.toString()}

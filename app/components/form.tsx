@@ -1,5 +1,14 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+import { currencyText } from "@/lib/texts";
+
+interface FormInputs {
+  quantity: string;
+  price: string;
+  discount: string;
+  currencyType: "USD" | "EUR";
+}
+import clsx from "clsx";
 
 export default function Form({
   providerName,
@@ -20,41 +29,32 @@ export default function Form({
     watch,
     setValue,
     formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => {
-    console.log(data);
+  } = useForm<FormInputs>();
+  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    const formData = {
+      title,
+      partNumber,
+      quantity: data.quantity,
+      provider: {
+        name: providerName,
+        currency: currencyType,
+        price: data.price,
+        discount: data.discount,
+      },
+    };
+    fetch("https://dummyjson.com/c/f2dc-400e-4fc3-a343", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => {
+        console.log(res);
+        close();
+      })
+      .catch((err) => console.log(err));
   };
-
-  useEffect(() => {
-    const subscription = watch((data, { name, type }) => {
-      if (
-        (name === "price" ||
-          name === "quantity" ||
-          name === "discount" ||
-          name === "finalPrice") &&
-        type === "change"
-      ) {
-        setValue(
-          "wholePrice",
-          (Number(data.price) * Number(data.quantity) || 0).toString()
-        );
-        setValue(
-          "finalPrice",
-          (
-            Number(watch("price")) -
-              (Number(watch("discount")) / 100) * Number(watch("price")) || 0
-          ).toString()
-        );
-        setValue(
-          "finalWholePrice",
-          (
-            Number(watch("finalPrice")) * Number(watch("quantity")) || 0
-          ).toString()
-        );
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch]);
 
   return (
     <div className="w-full border-[1px] border-gray-200 rounded-[20px] p-[20px]">
@@ -85,7 +85,9 @@ export default function Form({
             <input
               type="number"
               {...register("quantity", { required: true })}
-              className="input input-bordered w-full max-w-xs"
+              className={clsx("input input-bordered w-full ", {
+                "input-error": errors.quantity,
+              })}
             />
             <div className="label h-[30px]">
               {errors.quantity && (
@@ -102,7 +104,9 @@ export default function Form({
             <input
               type="number"
               {...register("price", { required: true })}
-              className="input input-bordered w-full max-w-xs"
+              className={clsx("input input-bordered w-full ", {
+                "input-error": errors.price,
+              })}
             />
             <div className="label h-[30px]">
               {errors.price && (
@@ -118,9 +122,8 @@ export default function Form({
             </div>
             <input
               type="number"
-              // value={Number(watch("price")) * Number(watch("quantity")) || 0}
-              {...register("wholePrice")}
-              className="input input-bordered w-full max-w-xs"
+              value={Number(watch("price")) * Number(watch("quantity")) || 0}
+              className="input input-bordered w-full "
               disabled
             />
             <div className="label h-[30px]"></div>
@@ -132,7 +135,7 @@ export default function Form({
             <input
               type="number"
               {...register("discount")}
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full "
             />
             <div className="label h-[30px]"></div>
           </label>
@@ -142,8 +145,12 @@ export default function Form({
             </div>
             <input
               type="number"
-              {...register("finalPrice")}
-              className="input input-bordered w-full max-w-xs"
+              value={(
+                Number(watch("price")) -
+                  (Number(watch("discount")) / 100) * Number(watch("price")) ||
+                0
+              ).toString()}
+              className="input input-bordered w-full "
               disabled
             />
             <div className="label h-[30px]"></div>
@@ -154,8 +161,13 @@ export default function Form({
             </div>
             <input
               type="number"
-              {...register("finalWholePrice")}
-              className="input input-bordered w-full max-w-xs"
+              value={(
+                Number(
+                  Number(watch("price")) -
+                    (Number(watch("discount")) / 100) * Number(watch("price"))
+                ) * Number(watch("quantity")) || 0
+              ).toString()}
+              className="input input-bordered w-full "
               disabled
             />
             <div className="label h-[30px]"></div>
@@ -182,8 +194,11 @@ export default function Form({
             </div>
             <input
               type="text"
-              {...register("currencyType", { value: currencyType })}
-              className="input input-bordered w-full max-w-xs"
+              {...register("currencyType", {
+                // @ts-ignore
+                value: currencyText[currencyType],
+              })}
+              className="input input-bordered w-full "
               disabled
             />
             <div className="label h-[30px]"></div>

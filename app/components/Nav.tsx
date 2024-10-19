@@ -12,9 +12,6 @@ export const Nav = () => {
 
   return (
     <nav className="flex flex-row [direction:rtl] mt-[20px] mx-[20px] ">
-      {/* <Link href="/">Home</Link>
-      <Link href="/verify">Verify</Link>
-      <Link href="/quotes">Quotes</Link> */}
       {data &&
         data.products.map((product) => (
           <Link
